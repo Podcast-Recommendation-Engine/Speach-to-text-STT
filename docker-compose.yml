@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  stt-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: podcast-stt-service
+    ports:
+      - "50052:50052"
+    volumes:
+      - ./model:/opt/vosk-model-en
+    env_file:
+      - .env
+    networks:
+      - podcast-network
+
+networks:
+  podcast-network:
+    driver: bridge

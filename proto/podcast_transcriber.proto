@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package podcast.transcriber.v1;
+
+// Service for transcribing podcast audio files
+service PodcastTranscriber {
+  // Transcribe audio in chunks with progress updates
+  rpc TranscribeFileStreaming (TranscribeFileRequest) returns (stream TranscribeProgressResponse);
+}
+
+message TranscribeFileRequest {
+  // Audio file data (WAV format)
+  bytes audio_data = 1;
+  
+  // Audio sample rate (e.g., 16000, 44100, 48000)
+  int32 sample_rate = 2;
+  
+  // Number of audio channels (1 for mono, 2 for stereo)
+  int32 channels = 3;
+  
+  // Enable word-level timestamps
+  bool enable_word_timestamps = 4;
+}
+
+message TranscribeFileResponse {
+  // Full transcription text
+  string transcript = 1;
+  
+  // Confidence score (0.0 to 1.0)
+  float confidence = 2;
+  
+  // Duration of audio in seconds
+  float duration_seconds = 3;
+  
+  // Processing time in seconds
+  float processing_time_seconds = 4;
+  
+  // Word-level details (if enabled)
+  repeated WordInfo words = 5;
+}
+
+message TranscribeProgressResponse {
+  // Progress percentage (0-100)
+  int32 progress_percentage = 1;
+  
+  // Partial transcript (accumulated so far)
+  string partial_transcript = 2;
+  
+  // Current processing status
+  string status = 3;
+  
+  // Final response (only in last message)
+  TranscribeFileResponse final_result = 4;
+}
+
+message WordInfo {
+  // The word text
+  string word = 1;
+  
+  // Start time in seconds
+  float start_time = 2;
+  
+  // End time in seconds
+  float end_time = 3;
+  
+  // Confidence for this word
+  float confidence = 4;
+}
