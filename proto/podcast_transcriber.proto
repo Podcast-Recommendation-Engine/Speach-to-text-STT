@@ -4,8 +4,13 @@ package podcast.transcriber.v1;
 
 // Service for transcribing podcast audio files
 service PodcastTranscriber {
-  // Transcribe audio in chunks with progress updates
+  // OLD: Single request with full file (kept for backward compatibility)
+  // Limited to 2GB due to gRPC constraints
   rpc TranscribeFileStreaming (TranscribeFileRequest) returns (stream TranscribeProgressResponse);
+  
+  // NEW: Streaming upload for unlimited file sizes (RECOMMENDED)
+  // Client streams audio chunks, server streams back progress
+  rpc TranscribeStreamingBidirectional (stream AudioChunk) returns (stream TranscribeProgressResponse);
 }
 
 message TranscribeFileRequest {
@@ -65,4 +70,26 @@ message WordInfo {
   
   // Confidence for this word
   float confidence = 4;
+}
+
+// NEW: Audio chunk for streaming upload
+message AudioChunk {
+  // Audio data chunk (e.g., 1-10 MB)
+  bytes audio_data = 1;
+  
+  // Chunk sequence number (0, 1, 2, ...)
+  int32 chunk_number = 2;
+  
+  // True if this is the first chunk (contains metadata)
+  bool is_first_chunk = 3;
+  
+  // True if this is the last chunk
+  bool is_last_chunk = 4;
+  
+  // Metadata (only required in first chunk)
+  int32 sample_rate = 5;
+  int32 channels = 6;
+  int64 total_size = 7;
+  string filename = 8;
+  bool enable_word_timestamps = 9;
 }

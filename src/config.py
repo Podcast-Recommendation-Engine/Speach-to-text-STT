@@ -1,6 +1,7 @@
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from tokenize import Double
 from typing import Optional
 
 
@@ -10,7 +11,7 @@ class ServerConfig:
     host: str = '0.0.0.0'
     port: int = 50052
     max_workers: int = 4
-    max_message_length: int = 100 * 1024 * 1024  # 100MB
+    max_message_length: int = 2147483647  # 2GB - Max gRPC message size (2^31 - 1)
     
     @classmethod
     def from_env(cls) -> 'ServerConfig':
@@ -67,8 +68,8 @@ class Config:
     # Logging configuration
     LOG_LEVEL = os.getenv('PODCAST_TRANSCRIBER_LOG_LEVEL', 'INFO')
     
-    # gRPC configuration
-    MAX_MESSAGE_LENGTH = int(os.getenv('GRPC_MAX_MESSAGE_LENGTH', 100 * 1024 * 1024))  # 100MB
+    # gRPC configuration - Maximum safe value for gRPC (2GB)
+    MAX_MESSAGE_LENGTH = int(os.getenv('GRPC_MAX_MESSAGE_LENGTH', 2147483647))  # 2GB (2^31 - 1)
     
     # Audio configuration defaults
     DEFAULT_SAMPLE_RATE = 16000
