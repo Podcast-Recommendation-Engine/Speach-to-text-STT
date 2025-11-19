@@ -16,19 +16,19 @@ eggs/
 lib/
 lib64/
 parts/
+transcriptions
 docs/
 sdist/
 var/
 wheels/
 *.egg-info/
 .installed.cfg
+data
 *.egg
 
 # Virtual environments
 .venv/
-venv/
-ENV/
-env/
+
 
 # IDE
 .vscode/
@@ -54,6 +54,7 @@ logs/
 # Model files (large)
 model/model/
 *.mdl
+models
 *.fst
 *.dubm
 *.ie
@@ -64,13 +65,4 @@ model/model/
 *.mp3
 *.flac
 
-# Docker
-docker-compose.override.yml
-
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-
-# OS
-Thumbs.db
+transcripts
