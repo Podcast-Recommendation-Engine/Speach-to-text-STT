@@ -12,11 +12,11 @@ def init_model():
     )
     return model
 
-def model_start(model):
+def model_start(model, audio_path):
     batched_model = BatchedInferencePipeline(model= model)
     segments, info = batched_model.transcribe(
         # i SHOULD CONCATENATE IT WITH THE OUPUT OF KAFKA CAUSE IT WILL CONSUME THE FILE NAME
-        AUDIO_PATH,
+        audio_path,
         language="en",
         task="transcribe",
         log_progress=True,

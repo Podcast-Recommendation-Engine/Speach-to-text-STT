@@ -10,17 +10,13 @@ RUN apt-get update && apt-get install -y \
     libsndfile1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy project configuration
+
 COPY pyproject.toml .
-
-# Install Python dependencies from pyproject.toml
-RUN pip install --no-cache-dir .
-
-# Copy application source code
 COPY src/ ./src/
-
-# Copy models directory
 COPY models/ ./models/
+
+RUN pip install --no-cache-dir . && rm -rf build
+
 
 # Create necessary directories
 RUN mkdir -p data/audio data/raw data/transcripts
