@@ -1,0 +1,31 @@
+
+from config import *
+from faster_whisper import BatchedInferencePipeline, WhisperModel
+
+def init_model():
+    model= WhisperModel(
+        model_size_or_path= MODEL_PATH,
+        device= DEVICE,
+        num_workers= NUM_WORKERS,
+        cpu_threads= CPU_NUM,
+        compute_type= COMPUTE_TYPE
+    )
+    return model
+
+def model_start(model):
+    batched_model = BatchedInferencePipeline(model= model)
+    segments, info = batched_model.transcribe(
+        # i SHOULD CONCATENATE IT WITH THE OUPUT OF KAFKA CAUSE IT WILL CONSUME THE FILE NAME
+        AUDIO_PATH,
+        language="en",
+        task="transcribe",
+        log_progress=True,
+        beam_size=3,    
+        vad_filter=True,
+        vad_parameters=dict(min_silence_duration_ms=500),
+        chunk_length=30,  
+        batch_size=2,     
+        without_timestamps=True,
+    )
+    return segments
+
