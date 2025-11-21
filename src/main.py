@@ -1,29 +1,27 @@
-from service import init_model, model_start
+import logging
+import time
+from service import init_model, model_start, process_audio
 from utils import config, extract_content, save_data
 from confluent_kafka import Consumer
 import threading
 from queue import Queue
+from config import TOPIC_AUDIO, URL, PORT, GROUP_ID
 
 
-def process_audio(audio_path, model):
-    """Process audio in background thread"""
-    try:
-        segments = model_start(model=model, audio_path=audio_path)
-        segments_list_content = extract_content(segments=segments)
-        save_data(segments=segments_list_content, filename="test.txt")
-        print(f"✓ Completed: {audio_path}")
-    except Exception as e:
-        print(f"✗ Error processing {audio_path}: {e}")
-
+logging.basicConfig(
+    format='%(asctime)s %(levelname)s: %(message)s',
+    level=logging.INFO,
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+logging.Formatter.converter = time.gmtime
 
 def main():
-    url = 'localhost'
-    port = 29092
-    group_id = "Nato"
-    config_value = config(url=url, port=port, group_id=group_id)
+    config_value = config(url=URL, port=PORT, group_id=GROUP_ID)
     consumer = Consumer(config_value)
-    consumer.subscribe(["podcast_audio"])
-    print("Consumer is subcribing to audio podcast topic")
+
+    consumer.subscribe([TOPIC_AUDIO])
+
+    logging.info(f"Consumer is subcribing to {TOPIC_AUDIO} topic")
     model = init_model()
 
     try:
@@ -33,7 +31,7 @@ def main():
             if msg is None:
                 continue
             if msg.error():
-                print(f"Got error {msg.error()}")
+                logging.error(f"Got error {msg.error()}")
                 continue
 
             value = msg.value().decode('utf-8')
@@ -43,10 +41,13 @@ def main():
             thread.daemon = True
             thread.start()
 
-            print(f"⚙ Started processing: {value}")
+            logging.info(f"Started processing: {value}")
+            
+            # Commit the offset to prevent reprocessing
+            consumer.commit(msg)
 
     except KeyboardInterrupt:
-        print("\n  Stopping consumer gracefully")
+        logging.info("\n  Stopping consumer gracefully")
     finally:
         consumer.close()
 

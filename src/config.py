@@ -1,7 +1,16 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+
 MODEL_PATH= "models/faster-distil-whisper-small.en"
+URL= os.getenv('URL', 'docker')
+PORT= int(os.getenv('PORT', 9092))
+GROUP_ID= os.getenv('GROUP_ID', 'Nato')
+TOPIC_AUDIO= os.getenv('TOPIC_TO_READ', 'podcast_audio')
 
 
-# I test the process with 75% of my cpu core, I test on cpu intel i5, 12 cores,
+# I tested the process with 75% of my cpu core, I test on cpu intel i5, 12 cores,
 # but i will set a nb of process this time
 CPU_NUM= 6
 NUM_WORKERS= 3
