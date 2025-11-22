@@ -1,38 +1,16 @@
-# Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
+*.pyc
+*.pyo
+*.pyd
 .Python
+*.so
+*.egg
 *.egg-info/
 dist/
 build/
-*.egg
-
-# Virtual environments
+.venv/
 venv/
-env/
-ENV/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Git
+downloads/
 .git/
 .gitignore
-
-# Documentation
-docs/
 README.md
-
-# Data (except models - we need those)
-data/audio/*
-data/raw/*
-data/transcripts/*
-
-# OS
-.DS_Store
-Thumbs.db

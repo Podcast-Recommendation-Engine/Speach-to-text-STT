@@ -20,6 +20,7 @@ def config(url: str, port: int, group_id: str):
     config_dict= {
         "bootstrap.servers": f"{url}:{port}",
         "group.id": group_id,
-        "auto.offset.reset": "earliest"
+        "auto.offset.reset": "latest",
+        "enable.auto.commit": False
     }
     return config_dict

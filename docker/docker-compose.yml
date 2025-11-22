@@ -4,18 +4,21 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    container_name: podcast-scraper
+    container_name: stt
     env_file:
       ../.env
     volumes:
       - ../data:/app/data
+      - ../models:/app/models
     networks:
       - podcast-network
 
 volumes:
   podcast-data:
-    driver: local
+    external: true
 
 networks:
   podcast-network:
     driver: bridge
+    external: true
+
