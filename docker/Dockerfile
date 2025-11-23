@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY pyproject.toml .
 COPY src/ ./src/
-COPY models/ ./models/
+# COPY models/ ./models/
 
 # RUN pip install --no-cache-dir . && rm -rf build
 RUN pip install . 

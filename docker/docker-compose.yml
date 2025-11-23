@@ -9,7 +9,7 @@ services:
     env_file:
       - ../.env
     volumes:
-      - podcast-data:/var/lib/kafka/data
+      - kafka-data:/var/lib/kafka/data
     networks:
       - podcast-network
     healthcheck:
@@ -41,6 +41,7 @@ services:
       ../.env
     volumes:
       - ../data:/app/data
+      - ../models:/app/models
     networks:
       - podcast-network
 
@@ -49,9 +50,10 @@ services:
         condition: service_healthy
 
 
-
 volumes:
   podcast-data:
+    external: true
+  kafka-data:
     external: true
 
 networks:

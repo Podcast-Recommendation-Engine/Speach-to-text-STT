@@ -1,3 +1,4 @@
+import json
 import logging
 import time
 from service import init_model, model_start, process_audio
@@ -34,14 +35,16 @@ def main():
                 logging.error(f"Got error {msg.error()}")
                 continue
 
-            value = msg.value().decode('utf-8')
+            raw = msg.value().decode('utf-8')
+            data= json.loads(raw)
+            episode_path= data['full_path']
 
             # Process in background thread
-            thread = threading.Thread(target=process_audio, args=(value, model))
+            thread = threading.Thread(target=process_audio, args=(episode_path, model))
             thread.daemon = True
             thread.start()
 
-            logging.info(f"Started processing: {value}")
+            logging.info(f"Started processing: {episode_path}")
             
             # Commit the offset to prevent reprocessing
             consumer.commit(msg)

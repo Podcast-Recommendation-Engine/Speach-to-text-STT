@@ -47,7 +47,7 @@ def process_audio(audio_path, model):
         # I need to extract the excact file name without the extention 
         filename_with_extention= audio_path.split("/")[-1]
         filename =filename_with_extention.split(".")[0]
-        save_data(segments=segments_list_content, filename=f"data/transcripts/{filename}.txt")
-        logging.info(f"✓ Completed: {audio_path} with info {info}")
+        save_data(segments=segments_list_content, filename=f"data/silver/transcripts/{filename}.txt")
+        logging.info(f"✓ Completed: {audio_path}")
     except Exception as e:
         logging.error(f"✗ Error processing {audio_path}: {e}")
