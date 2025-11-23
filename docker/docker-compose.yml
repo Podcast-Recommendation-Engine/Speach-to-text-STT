@@ -1,5 +1,37 @@
 services:
-   
+  kafka:
+    image: confluentinc/cp-kafka:7.8.3
+    container_name: kafka
+    ports:
+    - "9092:9092" 
+    - "29092:29092" 
+
+    env_file:
+      - ../.env
+    volumes:
+      - podcast-data:/var/lib/kafka/data
+    networks:
+      - podcast-network
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+
+  podcast-scraper:
+    image: ibrahimghali/podcast-scraper:latest
+    container_name: podcast-scraper
+    volumes:
+      - ../data:/app/data
+    networks:
+      - podcast-network
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      kafka:
+        condition: service_healthy
+
   stt:
     build:
       context: ..
@@ -9,9 +41,14 @@ services:
       ../.env
     volumes:
       - ../data:/app/data
-      - ../models:/app/models
     networks:
       - podcast-network
+
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+
 
 volumes:
   podcast-data:

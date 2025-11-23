@@ -1,7 +1,17 @@
 
+import logging
+import time
 from config import *
 from faster_whisper import BatchedInferencePipeline, WhisperModel
 from utils import extract_content, save_data
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)s: %(message)s',
+    level=logging.INFO,
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+logging.Formatter.converter = time.gmtime
+
 
 def init_model():
     model= WhisperModel(
@@ -16,7 +26,6 @@ def init_model():
 def model_start(model, audio_path):
     batched_model = BatchedInferencePipeline(model= model)
     segments, info = batched_model.transcribe(
-        # i SHOULD CONCATENATE IT WITH THE OUPUT OF KAFKA CAUSE IT WILL CONSUME THE FILE NAME
         audio_path,
         language="en",
         task="transcribe",
@@ -28,17 +37,17 @@ def model_start(model, audio_path):
         batch_size=2,     
         without_timestamps=True,
     )
-    return segments
+    return segments, info
 
 def process_audio(audio_path, model):
     try:
-        segments = model_start(model=model, audio_path=audio_path)
+        segments, info = model_start(model=model, audio_path=audio_path)
         segments_list_content = extract_content(segments=segments)
 
         # I need to extract the excact file name without the extention 
         filename_with_extention= audio_path.split("/")[-1]
         filename =filename_with_extention.split(".")[0]
         save_data(segments=segments_list_content, filename=f"data/transcripts/{filename}.txt")
-        print(f"✓ Completed: {audio_path}")
+        logging.info(f"✓ Completed: {audio_path} with info {info}")
     except Exception as e:
-        print(f"✗ Error processing {audio_path}: {e}")
+        logging.error(f"✗ Error processing {audio_path}: {e}")
