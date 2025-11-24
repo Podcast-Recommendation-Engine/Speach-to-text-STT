@@ -47,7 +47,7 @@ def producer_config(url: str, port: int, acks: int):
 
 
 def delivery_report(err, msg):
-    if err :
+    if err:
         logging.error(f"Delivery Failed: {err}")
         return
     logging.info(f"Delivered message to {msg.topic()} [{msg.partition()}]")

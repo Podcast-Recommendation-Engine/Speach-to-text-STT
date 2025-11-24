@@ -2,12 +2,11 @@ import json
 import logging
 import time
 from service import init_model, process_and_queue
-from utils import consumer_config, producer_config, save_json_data  # ✅ Add save_json_data
+from utils import consumer_config, delivery_report, producer_config, save_json_data  # ✅ Add save_json_data
 from confluent_kafka import Consumer, Producer
 import threading
 from queue import Queue
 from config import ACKS, TOPIC_AUDIO, TOPIC_LLM, URL, PORT, GROUP_ID
-
 
 
 def main():
@@ -41,7 +40,7 @@ def main():
                         producer.produce(
                             TOPIC_TRANSCRIPTION,
                             value=output_message,
-                            callback=lambda err, msg: logging.error(f"Delivery failed: {err}") if err else logging.info(f"Message delivered to {msg.topic()}")
+                            callback= delivery_report
                         )
                         producer.poll(0)
                         
