@@ -1,4 +1,3 @@
-
 import logging
 import time
 from config import *
@@ -47,7 +46,31 @@ def process_audio(audio_path, model):
         # I need to extract the excact file name without the extention 
         filename_with_extention= audio_path.split("/")[-1]
         filename =filename_with_extention.split(".")[0]
-        save_data(segments=segments_list_content, filename=f"data/silver/transcripts/{filename}.txt")
+        full_transcript= save_data(segments=segments_list_content, filename=f"data/silver/transcripts/{filename}.txt")
         logging.info(f"✓ Completed: {audio_path}")
+
+        return full_transcript
+        
     except Exception as e:
         logging.error(f"✗ Error processing {audio_path}: {e}")
+
+
+def process_and_queue(episode_path, original_data, model, queue):
+    """Process audio and put result in queue"""
+    try:
+        result = process_audio(episode_path, model)
+        
+        enriched_data = original_data.copy()  # Keep all original fields
+        enriched_data['transcription'] = result  # Add transcription
+        
+        queue.put({
+            'status': 'success',
+            'data': enriched_data  # Send enriched message
+        })
+    except Exception as e:
+        logging.error(f"Error processing {episode_path}: {e}")
+        queue.put({
+            'status': 'error',
+            'data': original_data,
+            'error': str(e)
+        })
