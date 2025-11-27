@@ -15,8 +15,6 @@ COPY src/ ./src/
 # RUN pip install --no-cache-dir . && rm -rf build
 RUN pip install . 
 
-# Create necessary directories
-RUN mkdir -p data/audio data/raw data/transcripts
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1

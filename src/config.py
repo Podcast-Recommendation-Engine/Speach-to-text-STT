@@ -6,7 +6,7 @@ load_dotenv()
 MODEL_PATH= "models/faster-distil-whisper-small.en"
 URL= os.getenv('URL', 'docker')
 PORT= int(os.getenv('PORT', 9092))
-GROUP_ID= os.getenv('GROUP_ID', 'Natoo')
+GROUP_ID= os.getenv('GROUP_ID', 'Nato')
 TOPIC_AUDIO= os.getenv('TOPIC_TO_READ', 'podcast_audio')
 ACKS = int(os.getenv('ACKS', 1))
 TOPIC_LLM= os.getenv('TOPIC_TO_WRITE', "podcast_transcription")

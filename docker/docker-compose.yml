@@ -18,6 +18,27 @@ services:
       timeout: 10s
       retries: 5
 
+  stt:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: stt
+    env_file:
+      - ../.env
+    volumes:
+      - ../data:/app/data
+      - ../models:/app/models
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    networks:
+      - podcast-network
+    depends_on:
+      kafka:
+        condition: service_healthy
 
   podcast-scraper:
     image: ibrahimghali/podcast-scraper:latest
@@ -29,32 +50,8 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     depends_on:
-      kafka:
-        condition: service_healthy
-
-  # stt:
-  #   build:
-  #     context: ..
-  #     dockerfile: docker/Dockerfile
-  #   container_name: stt
-  #   env_file:
-  #     - ../.env
-  #   volumes:
-  #     - ../data:/app/data
-  #     - ../models:/app/models
-  #   runtime: nvidia
-  #   deploy:
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - capabilities: [gpu]
-
-  #   networks:
-  #     - podcast-network
-
-  #   depends_on:
-  #     kafka:
-  #       condition: service_healthy
+      - kafka
+      - stt
 
 
 volumes:
