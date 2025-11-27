@@ -1,6 +1,7 @@
 import logging
 import os
 import json
+import time
 
 
 def extract_content(segments) -> list:
@@ -28,28 +29,13 @@ def save_json_data(data: dict, filename: str) -> None:
     logging.info(f"✓ Saved JSON data to: {filename}")
 
 
-def consumer_config(url: str, port: int, group_id: str):
-    config_dict= {
-        "bootstrap.servers": f"{url}:{port}",
-        "group.id": group_id,
-        "auto.offset.reset": "latest",
-        "enable.auto.commit": False
-    }
-    return config_dict
 
 
-def producer_config(url: str, port: int, acks: int):
-    config_dict = {
-        "bootstrap.servers": f"{url}:{port}",
-        "acks": acks
-    }
-    return config_dict 
-
-
-def delivery_report(err, msg):
-    if err:
-        logging.error(f"Delivery Failed: {err}")
-        return
-    logging.info(f"Delivered message to {msg.topic()} [{msg.partition()}]")
-
+def setup_logging():
+    logging.basicConfig(
+        format='%(asctime)s %(levelname)s: %(message)s',
+        level=logging.INFO,
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+    logging.Formatter.converter = time.gmtime
 

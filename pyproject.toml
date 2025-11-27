@@ -3,9 +3,9 @@ name = "speach-to-text-stt"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 dependencies = [
-    "confluent-kafka>=2.12.2",
-    "dotenv>=0.9.9",
+    "python-dotenv>=1.0.0",
     "faster-whisper>=1.2.1",
+    "quixstreams>=3.23.1",
 ]
