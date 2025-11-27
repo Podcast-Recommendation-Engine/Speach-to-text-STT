@@ -1,8 +1,10 @@
 import logging
+import os
 import time
-from config import *
+
 from faster_whisper import BatchedInferencePipeline, WhisperModel
-from utils import extract_content, save_data
+from config import BATCH_SIZE, BEAM_SIZE, CHUNK_LENGTH, COMPUTE_TYPE, CPU_NUM, DEVICE, LANGUAGE, MIN_SILENCE_DURATION, MODEL_PATH, NUM_WORKERS, TOPIC_LLM, VAD_FILTER
+from utils import extract_content, save_data, save_json_data
 
 
 
@@ -48,6 +50,9 @@ def process_audio(audio_path, model):
         filename_with_ext = os.path.basename(audio_path)
         filename = os.path.splitext(filename_with_ext)[0]
 
+        # Saving the data is for debugging purposes, i should make sure each data generated
+        # is persisted in my local storage
+
         full_transcript = save_data(
             segments=segments_list_content,
             filename=f"data/silver/transcripts/{filename}.txt"
@@ -84,6 +89,8 @@ def trancribe(msg, model):
         }
         
         logging.info(f" Sending enriched transcription to {TOPIC_LLM}")
+        filename = f"data/silver/episode/{result.get('title')}.json"
+        save_json_data(result, filename)
         return result
     else:
         logging.warning(f" No transcription returned for ID: {msg.get('id')}")
