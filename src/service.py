@@ -75,18 +75,8 @@ def trancribe(msg, model):
         logging.info(f" Transcription completed for ID: {msg.get('id')}")
         
         # Enrich transcription with metadata
-        result = {
-            "id": msg.get('id'),
-            "title": msg.get('title'),
-            "audio_url": msg.get('audio_url'),
-            "authors": msg.get('authors'),
-            "year": msg.get('year'),
-            "month": msg.get('month'),
-            "day": msg.get('day'),
-            "itunes_duration": msg.get('itunes_duration'),
-            "transcription": transcription,
-            "full_path": msg.get('full_path')
-        }
+        result= msg.copy()
+        result["transcription"]= transcription
         
         logging.info(f" Sending enriched transcription to {TOPIC_LLM}")
         filename = f"data/silver/episode/{result.get('title')}.json"

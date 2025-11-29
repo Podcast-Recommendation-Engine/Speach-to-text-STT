@@ -1,0 +1,20 @@
+# Use Confluent’s official Kafka Connect base image
+FROM confluentinc/cp-kafka-connect:7.8.3
+
+# Switch to root to install the connector
+USER root
+
+# Install the Elasticsearch Sink Connector from Confluent Hub
+# Version 15.0.1 is specified; --no-prompt avoids interactive prompts
+RUN confluent-hub install --no-prompt confluentinc/kafka-connect-elasticsearch:15.0.1
+
+# Fix permissions (optional, but recommended)
+RUN chown -R 1001:1001 /usr/share/confluent-hub-components
+
+# Switch back to non-root user for security
+USER 1001
+
+# Expose Kafka Connect REST API port
+EXPOSE 8083
+
+# Start Kafka Connect (default entrypoint is fine)
