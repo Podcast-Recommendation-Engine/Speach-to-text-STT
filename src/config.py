@@ -2,17 +2,13 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-
 MODEL_PATH= "models/faster-distil-whisper-small.en"
-URL= os.getenv('URL', 'docker')
-PORT= int(os.getenv('PORT', 9092))
-GROUP_ID= os.getenv('GROUP_ID', 'Nato')
-TOPIC_AUDIO= os.getenv('TOPIC_TO_READ', 'podcast_audio')
-ACKS = int(os.getenv('ACKS', 1))
-TOPIC_LLM= os.getenv('TOPIC_TO_WRITE', "podcast_transcription")
-
-
-
+URL= os.getenv('STT_KAFKA_URL', 'kafka')
+PORT= int(os.getenv('STT_KAFKA_PORT', 9092))
+GROUP_ID= os.getenv('STT_KAFKA_GROUP_ID', 'Nato')
+TOPIC_AUDIO= os.getenv('STT_KAFKA_TOPIC_IN', 'podcast_audio')
+TOPIC_LLM= os.getenv('STT_KAFKA_TOPIC_OUT', "podcast_transcription")
+ACKS = int(os.getenv('STT_KAFKA_ACKS', 1))
 
 # Audio data needs preprocessing before going into the GPU: 
 # Loading files from disk

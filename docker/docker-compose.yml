@@ -90,11 +90,29 @@ services:
       kafka:
         condition: service_healthy
 
+
+  llm-service:
+    image: ibrahimghali/llm-service:latest
+    container_name: llm-service
+    volumes:
+      - ../data:/app/data
+    networks:
+      - podcast-network
+    env_file:
+      - ../.env
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      kafka:
+        condition: service_healthy
+
   podcast-scraper:
     image: ibrahimghali/podcast-scraper:latest
     container_name: podcast-scraper
     volumes:
       - ../data:/app/data
+    env_file:
+      - ../.env
     networks:
       - podcast-network
     environment:
@@ -102,6 +120,7 @@ services:
     depends_on:
       - kafka
       - stt
+      - llm-service
 
 
 volumes:
