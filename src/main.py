@@ -16,6 +16,10 @@ def main(url: str, port: int, consumer_group: str, topic_in: str, topic_out: str
         broker_address= f"{url}:{port}",
         auto_offset_reset= "earliest",
         consumer_group= consumer_group,
+        consumer_extra_config={
+            "max.poll.interval.ms": 1800000,   # 30 minutes
+            "session.timeout.ms": 45000,       # optional: 45 sec instead of 10
+        }
     )
     input_topic= app.topic(topic_in)
     output_topic= app.topic(topic_out)

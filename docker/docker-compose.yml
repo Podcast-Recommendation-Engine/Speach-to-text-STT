@@ -78,12 +78,12 @@ services:
     volumes:
       - ../data:/app/data
       - ../models:/app/models
-    # runtime: nvidia
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - capabilities: [gpu]
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - capabilities: [gpu]
     networks:
       - podcast-network
     depends_on:
